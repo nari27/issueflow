@@ -3,6 +3,7 @@ package com.issueflow.issue.service;
 import com.issueflow.global.exception.NotFoundException;
 import com.issueflow.issue.dto.IssueCreateRequest;
 import com.issueflow.issue.dto.IssueResponse;
+import com.issueflow.issue.dto.IssueUpdateRequest;
 import com.issueflow.issue.entity.Issue;
 import com.issueflow.issue.entity.IssueStatus;
 import com.issueflow.issue.repository.IssueRepository;
@@ -82,5 +83,60 @@ public class IssueService {
                         issue.getAssignee() != null ? issue.getAssignee().getName() : null
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public IssueResponse updateIssueStatus(Long issueId, String status) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new NotFoundException("이슈를 찾을 수 없습니다."));
+
+        IssueStatus issueStatus = IssueStatus.valueOf(status);
+        issue.updateStatus(issueStatus);
+
+        return new IssueResponse(
+                issue.getId(),
+                issue.getTitle(),
+                issue.getDescription(),
+                issue.getStatus(),
+                issue.getPriority(),
+                issue.getProject().getId(),
+                issue.getAuthor().getId(),
+                issue.getAuthor().getName(),
+                issue.getAssignee() != null ? issue.getAssignee().getId() : null,
+                issue.getAssignee() != null ? issue.getAssignee().getName() : null
+        );
+    }
+
+    @Transactional
+    public IssueResponse updateIssue(Long issueId, IssueUpdateRequest request) {
+
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new NotFoundException("이슈를 찾을 수 없습니다."));
+
+        User assignee = null;
+
+        if (request.getAssigneeId() != null) {
+            assignee = userRepository.findById(request.getAssigneeId())
+                    .orElseThrow(() -> new NotFoundException("담당자를 찾을 수 없습니다."));
+        }
+
+        issue.update(
+                request.getTitle(),
+                request.getDescription(),
+                assignee
+        );
+
+        return new IssueResponse(
+                issue.getId(),
+                issue.getTitle(),
+                issue.getDescription(),
+                issue.getStatus(),
+                issue.getPriority(),
+                issue.getProject().getId(),
+                issue.getAuthor().getId(),
+                issue.getAuthor().getName(),
+                issue.getAssignee() != null ? issue.getAssignee().getId() : null,
+                issue.getAssignee() != null ? issue.getAssignee().getName() : null
+        );
     }
 }

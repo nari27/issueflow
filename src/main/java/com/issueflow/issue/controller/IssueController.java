@@ -2,6 +2,8 @@ package com.issueflow.issue.controller;
 
 import com.issueflow.issue.dto.IssueCreateRequest;
 import com.issueflow.issue.dto.IssueResponse;
+import com.issueflow.issue.dto.IssueStatusUpdateRequest;
+import com.issueflow.issue.dto.IssueUpdateRequest;
 import com.issueflow.issue.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,5 +30,17 @@ public class IssueController {
     @GetMapping("/projects/{projectId}/issues")
     public List<IssueResponse> getIssuesByProject(@PathVariable Long projectId) {
         return issueService.getIssuesByProject(projectId);
+    }
+
+    @PatchMapping("/issues/{issueId}/status")
+    public IssueResponse updateIssueStatus(@PathVariable Long issueId,
+                                           @RequestBody IssueStatusUpdateRequest request) {
+        return issueService.updateIssueStatus(issueId, request.getStatus());
+    }
+
+    @PatchMapping("/issues/{issueId}")
+    public IssueResponse updateIssue(@PathVariable Long issueId,
+                                     @RequestBody IssueUpdateRequest request) {
+        return issueService.updateIssue(issueId, request);
     }
 }

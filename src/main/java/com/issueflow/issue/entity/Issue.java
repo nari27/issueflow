@@ -46,4 +46,16 @@ public class Issue {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public  void updateStatus(IssueStatus status) {
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void update(String title, String description, User assignee) {
+        this.title = title;
+        this.description = description;
+        this.assignee = assignee;
+        this.updatedAt = LocalDateTime.now();
+    }
 }
