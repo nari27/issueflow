@@ -139,4 +139,11 @@ public class IssueService {
                 issue.getAssignee() != null ? issue.getAssignee().getName() : null
         );
     }
+
+    @Transactional
+    public void deleteIssue(Long issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new NotFoundException("이슈를 찾을 수 없습니다."));
+        issueRepository.delete(issue);
+    }
 }

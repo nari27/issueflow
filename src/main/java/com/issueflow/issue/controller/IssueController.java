@@ -43,4 +43,10 @@ public class IssueController {
                                      @RequestBody IssueUpdateRequest request) {
         return issueService.updateIssue(issueId, request);
     }
+
+    @DeleteMapping("/issues/{issueId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteIssue(@PathVariable Long issueId) {
+        issueService.deleteIssue(issueId);
+    }
 }
